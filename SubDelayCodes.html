@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SunExpress Sub-Delay Codes</title>
+  <script src="js/jquery.min.js"></script>
+  <link rel="stylesheet" href="css\bootstrap.min.css" type="text/css">
+  
+  <style>
+    #result {
+      position: absolute;
+      width: 100%;
+      max-width: 870px;
+      cursor: pointer;
+      overflow-y: auto;
+      max-height: 400px;
+      box-sizing: border-box;
+      z-index: 1001;
+    }
+
+    .link-class:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+
+<body>
+  <br /><br />
+  <div class="container" style="width:900px;">
+    <h2 align="center">SunExpress Sub-Delay Codes :</h2>
+    <br /><br />
+    <div class="row">
+      <div class="input-group">
+        <input type="text" class="form-control" name="search" id="search" placeholder="Search Sub-Delay Codes" />
+        <span class="input-group-btn">
+          <button id="btnSearch" class="btn btn-info" type="button"><span class="glyphicon glyphicon-search"></span></button>
+        </div>
+      </div>
+    <ul class="list-group" id="result"></ul>
+    <br />
+  </div>
+</body>
+
+</html>
+
+<script src="js/Subdelaycodes.js"></script>
+
+<script>
+  var UI = {
+    Elements: {},
+    Functions: {
+      initSearch: function () {
+        UI.Elements.$result.html('');
+        UI.Elements.$state.val('');
+      }
+    },
+    Events: {
+      search:function () {
+      UI.Functions.initSearch();
+
+      var searchField = UI.Elements.$search.val();
+      var expression = new RegExp(searchField, "i");
+
+      if (!data) throw Error("There must be declared data!");
+
+      data.forEach(function (item, index, array) {
+
+        let found = item.SUBCODE.search(expression) != -1 ||
+          item.EXPLANATION.search(expression) != -1 ||
+          item.RESPONSIBLE.search(expression) != -1
+
+        if (found) {
+          let liContent = item.SUBCODE + ' | <span class="text-muted"> ' +
+            item.EXPLANATION + ' | <span class="list-group-item">Responsible Department: ' +
+            item.RESPONSIBLE + ' </span class="note">';
+
+          let $li = $('<li/>', {
+              id: 'li_' + item.SUBCODE,
+              "class": 'list-group-item list-group-item-active'
+            })
+
+            .html(liContent)
+            .click(UI.Events.selectedItemClick);
+          UI.Elements.$result.append($li);
+        }
+      });
+    },
+      selectedItemClick: function () {
+        var click_text = $(this).text().split('|');
+        UI.Elements.$search.val($.trim(click_text[0]) + ' | ' + $.trim(click_text[1]));
+        UI.Elements.$result.html('');
+      },
+      selectAllText:function(){
+        $(this).select();
+      }
+    }
+  }
+
+  $(function () {
+
+    UI.Elements.$search = $('#search');
+    UI.Elements.$result = $('#result');
+    UI.Elements.$btnSearch = $('#btnSearch');
+    UI.Elements.$state = $('#state');
+
+    UI.Elements.$search.click(UI.Events.selectAllText);
+    UI.Elements.$btnSearch.click(UI.Events.search);
+  });
+</script>
